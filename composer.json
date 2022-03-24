@@ -1,0 +1,21 @@
+{
+    "name": "khromov/appreciation-jar",
+    "license": "GPLv2",
+    "autoload": {
+        "psr-4": {
+            "Khromov\\AppreciationJar\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Stanislav Khromov",
+            "email": "stanislav+github@khromov.se"
+        }
+    ],
+    "require": {
+        "slim/slim": "^4.10",
+        "slim/php-view": "^3.1",
+        "slim/psr7": "^1.5",
+        "laminas/laminas-escaper": "^2.10"
+    }
+}
