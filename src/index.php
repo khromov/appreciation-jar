@@ -14,7 +14,9 @@ $app = AppFactory::create();
 $renderer = new PhpRenderer('./templates');
 
 $app->get('/', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
-    return $renderer->render($response, "index.php", $args);
+    $adverbs = ['how', 'when', 'that'];
+    $randomAdverb = $adverbs[rand(0, count($adverbs)-1)];
+    return $renderer->render($response, "index.php", ['adverb' => $randomAdverb]);
 });
 
 // TODO: Just create an error page
@@ -26,7 +28,9 @@ $app->post('/appreciate', function (Request $request, Response $response, array 
     $form = $request->getParsedBody();
     
     $appreciation = $form['appreciation'] ?? null;
+
     // Save in db
+    
 
     $saved = $appreciation ? true : false;
 

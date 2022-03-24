@@ -1,6 +1,3 @@
-<?php
-    $adverbs = ['how', 'when', 'that'];
-?>
 <!doctype html>
 <html>
 <head>
@@ -24,7 +21,7 @@
                 </p>
                 <form action="/appreciate" method="post">
                     <p class="text-center mb-4">
-                        <textarea id="appreciation" name="appreciation" rows="4" placeholder="I really appreciate <?php echo $adverbs[rand(0, count($adverbs)-1)]; ?> you..." class="px-4 w-11/12 mx-auto form-input py-3 rounded-xl border-gray-400"></textarea>
+                        <textarea id="appreciation" name="appreciation" rows="4" placeholder="I really appreciate <?php echo $adverb; ?> you..." class="px-4 w-11/12 mx-auto form-input py-3 rounded-xl border-gray-400"></textarea>
                     </p>
                     <p class="text-center mb-4">
                         <input type="submit" value="Send appreciation" class="form-input border px-4 py-2 rounded-lg border-gray-400">

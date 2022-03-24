@@ -1,6 +1,3 @@
-<?php
-    $adverbs = ['how', 'when', 'that'];
-?>
 <!doctype html>
 <html>
 <head>
