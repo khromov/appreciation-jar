@@ -6,6 +6,8 @@ use Slim\Views\PhpRenderer;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+$config = require '../config.php';
+
 if (class_exists('PDO')) {
     if (!in_array("sqlite", PDO::getAvailableDrivers())) {
         echo "You need PDO + sqlite connector to use this software.";
@@ -14,7 +16,7 @@ if (class_exists('PDO')) {
 }
 
 // Change this if you move the project into a subdirectory
-$baseFolder = '/';
+$baseFolder = $config['baseFolder'];
 
 $app = AppFactory::create();
 
@@ -32,39 +34,53 @@ $app->get('/appreciate', function (Request $request, Response $response, array $
 
 $app->post('/appreciate', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
     $form = $request->getParsedBody();
+    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
+
+    $lastId = false;
     
     $appreciation = $form['appreciation'] ?? null;
+    if(is_string($appreciation) && trim($appreciation) !== '') {
+        $trimmed_appreciation = trim($appreciation);
+            
+        $params = [time(), $trimmed_appreciation, ''];
 
-    // Save in db
+        // Prepare and execute the SQL statement
+        $stmt = $db->prepare('INSERT INTO appreciations(time, text, author) VALUES(?, ?, ?);');
+        $stmt->execute($params);
+        $lastId = $db->lastInsertId();
 
+        $saved = $lastId ? true : false;
+    } else {
+        $saved = false;
+    }
 
-    $saved = $appreciation ? true : false;
-
-    return $renderer->render($response, "appreciate.php", ['saved' => $saved, 'baseFolder' => $baseFolder]);
+    return $renderer->render($response, "appreciate.php", ['saved' => $saved, 'baseFolder' => $baseFolder, 'id' => $lastId]);
 });
 
-$app->get('/init', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
-    $fileName = __DIR__ . "/../db/appreciations.sqlite";
-    $dsn = "sqlite:$fileName";
+$app->get('/admin/{secret}', function (Request $request, Response $response, array $args) use ($config, $renderer, $baseFolder) {
+    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
 
-    try {
-        $db = new PDO($dsn);
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e) {
-        echo "Failed to connect to the database using DSN:<br>$dsn<br>";
-        throw $e;
+    $secret = $args['secret'] ?? null;
+
+    if($secret && $secret === $config['secret']) {
+        // Prepare and execute the SQL statement
+        $stmt = $db->prepare("SELECT * FROM appreciations");
+        $stmt->execute();
+        
+        // Get the results as an array with column names as array keys
+        $appreciations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $renderer->render($response, "admin.php", ['baseFolder' => $baseFolder, 'appreciations' => $appreciations, 'secret' => $secret]);
+    } else {
+        return $renderer->render($response, "appreciate.php", ['saved' => false, 'baseFolder' => $baseFolder]);
     }
-    
-    // Prepare and execute the SQL statement
-    $stmt = $db->prepare("SELECT * FROM appreciations");
-    $stmt->execute();
-    
-    // Get the results as an array with column names as array keys
-    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo "<pre>", print_r($res, true), "</pre>";
+});
 
-    $response->getBody()->write('OK');
-    return $response;
+$app->post('/admin/delete/{id}', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
+    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
+    $form = $request->getParsedBody();
+    var_dump($form);
+    var_dump($args);
 });
 
 $app->run();
