@@ -2,7 +2,7 @@
 <div class="flex flex-col h-screen justify-between">
     <div style="width: 650px;" class="max-w-full mb-auto mx-auto px-4 shrink-0">
         <div class="mx-auto mt-4 border-2 rounded-lg bg-white">
-            <img style="max-width: 200px" class="mx-auto mt-8" src="images/woolly-jam.png" alt="jam jar" />
+            <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>src/images/woolly-jam.png" alt="jam jar" />
             <h1 class="text-2xl font-bold text-center mt-4">The appreciation jar</h1>
             <p class="mt-4 mb-4 text-center px-6">
                 Write an appreciation about<br/> your partner below.

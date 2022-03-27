@@ -4,9 +4,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Views\PhpRenderer;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
-$config = require '../config.php';
+$config = require './config.php';
 
 if (class_exists('PDO')) {
     if (!in_array("sqlite", PDO::getAvailableDrivers())) {
@@ -20,7 +20,7 @@ $baseFolder = $config['baseFolder'];
 
 $app = AppFactory::create();
 
-$renderer = new PhpRenderer('./templates');
+$renderer = new PhpRenderer('./src/templates');
 
 $app->get('/', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
     $adverbs = ['how', 'when', 'that'];
