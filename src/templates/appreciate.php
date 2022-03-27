@@ -3,9 +3,9 @@
     <div style="width: 650px;" class="max-w-full mb-auto mx-auto px-4 shrink-0">
         <div class="mx-auto mt-4 border-2 rounded-lg bg-white pb-4">
             <?php if($saved): ?>
-                <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>src/images/arabica-452.png" alt="three hearts" />
+                <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>images/arabica-452.png" alt="three hearts" />
             <?php else: ?>
-                <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>src/images/bermuda-111.png" alt="broken heart" />
+                <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>images/bermuda-111.png" alt="broken heart" />
             <?php endif; ?>
             <h1 class="text-2xl font-bold text-center mt-4 px-6">
                 <?php echo $saved ? 'Your appreciation has<br/> been saved!' : 'Oh no, something<br/> went wrong!'; ?>
