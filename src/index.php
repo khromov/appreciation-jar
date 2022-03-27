@@ -76,11 +76,45 @@ $app->get('/admin/{secret}', function (Request $request, Response $response, arr
     }
 });
 
-$app->post('/admin/delete/{id}', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
+$app->post('/admin/delete/{id}', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder, $config) {
     $db = \Khromov\AppreciationJar\Lib\Db::initDb();
     $form = $request->getParsedBody();
-    var_dump($form);
-    var_dump($args);
+    $secret = $form['secret'] ?? null;
+
+
+    if($secret && $secret === $config['secret']) {
+        // Prepare and execute the SQL statement
+        $stmt = $db->prepare("DELETE FROM appreciations WHERE id = ?");
+        $stmt->execute([intval($args['id'])]);
+
+        return $response
+        ->withHeader('Location', "${baseFolder}admin/{$secret}")
+        ->withStatus(302);
+    } else { // Error page
+        return $renderer->render($response, "appreciate.php", ['saved' => false, 'baseFolder' => $baseFolder]);
+    }
+});
+
+$app->get('/appreciation/{id}', function(Request $request, Response $response, array $args) {
+    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
+
+    $id = $args['id'] ?? 0;
+
+    // Prepare and execute the SQL statement
+    $stmt = $db->prepare("SELECT * FROM appreciations WHERE id = ?");
+    $stmt->execute([intval($id)]);
+    $appreciation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if(sizeof($appreciation) === 0) {
+        return $response
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(404);
+    } else {
+        $response->getBody()->write(json_encode($appreciation[0]));
+        return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(200);
+    }
 });
 
 $app->run();
