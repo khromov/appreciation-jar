@@ -8,6 +8,7 @@ COPY config/nginx.conf /etc/nginx/nginx.conf
 
 # Remove default folder
 RUN rm -Rfv /var/www/html
+COPY --chown=nobody ./db /var/www/db
 COPY --chown=nobody ./src /var/www/src
 COPY --chown=nobody config.sample.php /var/www/config.php
 COPY composer.json composer.lock /var/www/
