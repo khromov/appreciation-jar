@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    volumes:
+      #- ./src:/var/www/html
+      #- ./vendor:/var/www/vendor
+      - ./db/appreciations.sqlite:/var/www/db/appreciations.sqlite
+    ports:
+      - "8080:8080"
+    #env_file:
+    #  - env_file
