@@ -1,5 +1,4 @@
 <?php 
-use Laminas\Escaper\Escaper;
 $escaper = new Laminas\Escaper\Escaper('utf-8');
 ?>
 <?php echo $this->fetch('./partial/header.php'); ?>

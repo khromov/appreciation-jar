@@ -15,7 +15,6 @@ if (class_exists('PDO')) {
     }
 }
 
-// Change this if you move the project into a subdirectory
 $baseFolder = $config['baseFolder'];
 
 $app = AppFactory::create();
@@ -57,6 +56,11 @@ $app->post('/appreciate', function (Request $request, Response $response, array 
     return $renderer->render($response, "appreciate.php", ['saved' => $saved, 'baseFolder' => $baseFolder, 'id' => $lastId]);
 });
 
+$app->get('/admin', function (Request $request, Response $response, array $args) use ($config, $renderer, $baseFolder) {
+    return $renderer->render($response, "error.php", [ 'errorMessage' => 'Don\'t forget to add the password, like this: /admin/<password>', 'baseFolder' => $baseFolder]);
+});
+
+
 $app->get('/admin/{secret}', function (Request $request, Response $response, array $args) use ($config, $renderer, $baseFolder) {
     $db = \Khromov\AppreciationJar\Lib\Db::initDb();
 
@@ -72,7 +76,7 @@ $app->get('/admin/{secret}', function (Request $request, Response $response, arr
 
         return $renderer->render($response, "admin.php", ['baseFolder' => $baseFolder, 'appreciations' => $appreciations, 'secret' => $secret]);
     } else {
-        return $renderer->render($response, "appreciate.php", ['saved' => false, 'baseFolder' => $baseFolder]);
+        return $renderer->render($response, "error.php", [ 'errorMessage' => '🤷‍♂️', 'baseFolder' => $baseFolder]);
     }
 });
 
@@ -115,6 +119,49 @@ $app->get('/appreciation/{id}', function(Request $request, Response $response, a
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(200);
     }
+});
+
+// Test to increment values
+$app->get('/increment', function(Request $request, Response $response, array $args) {
+    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
+
+    $lastUpdateStatement = $db->prepare("SELECT * FROM metadata WHERE key = ?");
+    $lastUpdateStatement->execute(['lastUpdate']);
+    $lastUpdate = intval($lastUpdateStatement->fetch()['value']);
+
+    $currentTime = time();
+
+    if(true || ($currentTime - $lastUpdate) > 86400) {
+
+        $lastMessageIdStatement = $db->prepare("SELECT id FROM appreciations ORDER by id DESC");
+        $lastMessageIdStatement->execute();
+        $lastMessageId = intval($lastMessageIdStatement->fetch()['id']);
+        
+        $currentCountStatement = $db->prepare("SELECT * FROM metadata WHERE key = ?");
+        $currentCountStatement->execute(['latestAppreciation']);
+        $currentCount = intval($currentCountStatement->fetch()['value']);
+
+        if($currentCount < $lastMessageId) {
+            $incrementedCount = $currentCount + 1;
+
+            $stmt = $db->prepare("INSERT INTO metadata(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value = ?;");
+            $stmt->execute(['latestAppreciation', $incrementedCount, $incrementedCount]);
+            $appreciation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            $lastUpdateStatement = $db->prepare("INSERT INTO metadata(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value = ?;");
+            $lastUpdateStatement->execute(['lastUpdate', $currentTime, $currentTime]);
+            $lastUpdate = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
+
+    $newCountStatement = $db->prepare("SELECT * FROM metadata WHERE key = ?");
+    $newCountStatement->execute(['latestAppreciation']);
+    $newCount = intval($newCountStatement->fetch()['value']);
+
+    $response->getBody()->write("OK - new count: " . json_encode($newCount));
+    return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
 });
 
 $app->run();
