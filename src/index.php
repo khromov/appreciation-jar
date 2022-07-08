@@ -123,38 +123,27 @@ $app->get('/appreciation/{id}', function(Request $request, Response $response, a
 
 // Test to increment values
 $app->get('/increment', function(Request $request, Response $response, array $args) use($db) {
-    $lastUpdateStatement = $db->prepare("SELECT * FROM metadata WHERE key = ?");
-    $lastUpdateStatement->execute(['lastUpdate']);
-    $lastUpdate = intval($lastUpdateStatement->fetch()['value']);
-
+    $lastUpdate = intval(Db::getMetadata('lastUpdate'));
     $currentTime = time();
 
-    // TODO: Remove true
-    if(true || ($currentTime - $lastUpdate) > 86400) {
+    if(($currentTime - $lastUpdate) > 86400) {
 
         $lastMessageId = Db::getLastMessageId();
         $currentCount = intval(Db::getMetadata('latestAppreciation', 0));
 
         if($currentCount < $lastMessageId) {
-            //var_dump("hello", $lastMessageId);
-            //die();
             $incrementedCount = $currentCount + 1;
 
-            $stmt = $db->prepare("INSERT INTO metadata(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value = ?;");
-            $stmt->execute(['latestAppreciation', $incrementedCount, $incrementedCount]);
-            $appreciation = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-            $lastUpdateStatement = $db->prepare("INSERT INTO metadata(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value = ?;");
-            $lastUpdateStatement->execute(['lastUpdate', $currentTime, $currentTime]);
-            $lastUpdate = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            Db::setMetadata('latestAppreciation', $incrementedCount);
+            Db::setMetadata('lastUpdate', $currentTime);
+
+            var_dump(Db::getMetadata('latestAppreciation'), Db::getMetadata('lastUpdate'));
         }
     }
 
-    $newCountStatement = $db->prepare("SELECT * FROM metadata WHERE key = ?");
-    $newCountStatement->execute(['latestAppreciation']);
-    $newCount = intval($newCountStatement->fetch()['value']);
+    $newCount = intval(Db::getMetadata('latestAppreciation', 0));
 
-    $response->getBody()->write("OK - new count: " . json_encode($newCount));
+    $response->getBody()->write("OK - latest appreciation: " . json_encode($newCount));
     return $response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200);
