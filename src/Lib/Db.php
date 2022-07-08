@@ -2,10 +2,55 @@
 namespace Khromov\AppreciationJar\Lib;
 
 class Db {
+    /**
+     * @var \PDO | null
+     */
     private static $db = null;
 
     static function initialize() {
-        return self::get();
+        $db = self::get();
+
+        // https://tableplus.com/blog/2018/04/sqlite-check-whether-a-table-exists.html
+        $tableExistsStatement = $db->prepare("SELECT * FROM sqlite_master WHERE type='table' AND name = ?;");
+        $tableExistsStatement->execute(['appreciations']);
+        $tableExistsResult = $tableExistsStatement->fetchAll();
+
+        // No table exists, they need to be created
+        if(sizeof($tableExistsResult) === 0) {
+            $createAppreciationsStatement = $db->prepare('
+                CREATE TABLE IF NOT EXISTS "appreciations" (
+                    "id"    INTEGER NOT NULL,
+                    "time"  INTEGER,
+                    "text"  TEXT,
+                    "author"    TEXT,
+                    "metadata"  TEXT,
+                    PRIMARY KEY("id" AUTOINCREMENT)
+                );
+            ');
+
+            $createMetadataStatement = $db->prepare('
+                CREATE TABLE IF NOT EXISTS "metadata" (
+                    "key"   TEXT UNIQUE,
+                    "value" TEXT,
+                    PRIMARY KEY("key")
+                );
+            ');
+
+            $createAppreciationsStatement->execute();
+            $createMetadataStatement->execute();
+
+            self::setMetadata('dbVersion', 1);
+        }
+
+        // Any additional migrations would go here
+
+        return $db;
+    }
+
+    static function createSchema() {
+        /*
+
+        */
     }
 
     static function get() {
@@ -87,11 +132,11 @@ class Db {
      * 
      * @return void 
      */
-    static function maybeIncrementLatestAppreciationId() {
+    static function maybeIncrementLatestAppreciationId($overrideTimer = false) {
         $lastUpdate = intval(self::getMetadata('lastUpdate'));
         $currentTime = time();
     
-        if(($currentTime - $lastUpdate) > 86400) {
+        if($overrideTimer || ($currentTime - $lastUpdate) > 86400) {
     
             $lastMessageId = self::getLastMessageId();
             $currentCount = intval(self::getMetadata('latestAppreciation', 0));

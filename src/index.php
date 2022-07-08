@@ -11,6 +11,8 @@ require __DIR__ . '/../vendor/autoload.php';
 $config = Helpers::getConfig();
 $db = Db::initialize();
 
+Db::maybeIncrementLatestAppreciationId();
+
 if (class_exists('PDO')) {
     if (!in_array("sqlite", PDO::getAvailableDrivers())) {
         echo "You need PDO + sqlite connector to use this software.";
@@ -25,7 +27,6 @@ $app = AppFactory::create();
 $renderer = new PhpRenderer('./templates');
 
 $app->get('/', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
-    Db::maybeIncrementLatestAppreciationId();
     $adverbs = ['how', 'when', 'that'];
     $randomAdverb = $adverbs[rand(0, count($adverbs)-1)];
     return $renderer->render($response, "form.php", ['adverb' => $randomAdverb]);
@@ -115,7 +116,7 @@ $app->post('/admin/delete/{id}', function (Request $request, Response $response,
     }
 });
 
-$app->get('/appreciation/{id}', function(Request $request, Response $response, array $args) use($db) {
+$app->get('/api/appreciation/{id}', function(Request $request, Response $response, array $args) use($db) {
     $id = $args['id'] ?? 0;
 
     if($id === 'latest') {
@@ -145,7 +146,7 @@ $app->get('/appreciation/{id}', function(Request $request, Response $response, a
 
 // Test to increment values
 $app->get('/increment', function(Request $request, Response $response, array $args) use($db) {
-    Db::maybeIncrementLatestAppreciationId();
+    Db::maybeIncrementLatestAppreciationId(true);
     $newCount = intval(Db::getMetadata('latestAppreciation', 0));
 
     $response->getBody()->write("OK - latest appreciation: " . json_encode($newCount));

@@ -1,4 +1,10 @@
-#### Run locally
+# Apprectiation Jar
+
+This is a small web application for creating a virtual [appreciation/gratitude jar](https://www.mindbodygreen.com/0-11062/how-to-create-a-gratitude-jar.html). It allows you to leave appreciations for your partner that can be shown on a screen or consumed via a JSON API.
+
+![](screenshots/appreciation-screenshot.png)
+
+## Run locally
 
 First, copy the config file and set the settings you wish:
 
@@ -33,6 +39,38 @@ php -S localhost:8080 -t src
 Now you can visit:
 
 http://localhost:8080/
+
+## Endpoints
+
+Add an appreciation:
+
+http://localhost:8080/
+
+(Names need to be whitelisted to act as a rudimentary spam filter, see `config.php` to set whitelisted names)
+
+Show latest appreciation:
+http://localhost:8080/latest
+
+Admin:
+http://localhost:8080/admin/<password> (See `config.php` to set a password)
+
+### JSON API
+
+Latest appreciation:
+http://localhost:8080/api/appreciation/latest
+
+Any appreciation by ID:
+http://localhost:8080/api/appreciation/<id>
+
+
+
+## Dump schema 
+
+```
+sqlite3 db/_appreciations.sqlite .schema > schema.sql
+```
+
+(Then add it in `Db::initialize()`)
 
 #### Subfolder configuration
 
