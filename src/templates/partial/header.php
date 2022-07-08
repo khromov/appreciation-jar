@@ -1,9 +1,14 @@
+<?php $config = getConfig(); ?>
 <!doctype html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?plugins=forms,aspect-ratio,line-clamp"></script>
+  <?php if($config['development'] === 'true'): ?>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,aspect-ratio,line-clamp"></script>
+  <?php else: ?>
+    <link href="/dist/output.css" rel="stylesheet">
+  <?php endif; ?>
 </head>
 <style>
     body {

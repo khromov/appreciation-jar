@@ -2,5 +2,6 @@
 return [
     'secret' => 'opensesame',
     'names' => ['Bob', 'Alice'],
-    'baseFolder' => '/'
+    'baseFolder' => '/',
+    'development' => 'false'
 ];

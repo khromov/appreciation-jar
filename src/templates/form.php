@@ -11,7 +11,7 @@
                 <div class="text-center mb-4">
                     <textarea id="appreciation" name="appreciation" rows="4" placeholder="I really appreciate <?php echo $adverb; ?> you..." class="px-4 w-11/12 mx-auto form-input py-3 rounded-xl border-gray-400"></textarea>
                 </div>
-                <div class="text-center mb-4 text-center">
+                <div class="text-center mb-4">
                     <p class="text-center">With love,</p>
                     <input id="name" name="name" type="text" placeholder="Your name" class="form-input border px-4 py-2 rounded-lg border-gray-400 text-center" />
                 </div>
@@ -33,7 +33,6 @@
         selectElement.addEventListener('input', (event) => {
             window.localStorage.setItem('name', event.target.value);
         });
-
     </script>
 </div>
 <?php echo $this->fetch('./partial/footer.php'); ?>

@@ -5,8 +5,9 @@ use Slim\Factory\AppFactory;
 use Slim\Views\PhpRenderer;
 
 require __DIR__ . '/../vendor/autoload.php';
+require './helpers.php';
 
-$config = require '../config.php';
+$config = getConfig();
 
 if (class_exists('PDO')) {
     if (!in_array("sqlite", PDO::getAvailableDrivers())) {
