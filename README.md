@@ -49,10 +49,14 @@ http://localhost:8080/
 (Names need to be whitelisted to act as a rudimentary spam filter, see `config.php` to set whitelisted names)
 
 Show latest appreciation:
+
 http://localhost:8080/latest
 
-Admin:
+Administrate / delete appreciations:
+
 http://localhost:8080/admin/<password> (See `config.php` to set a password)
+
+(Appreciations are partially hidden to avoid spoilers! 🙈)
 
 ### JSON API
 
