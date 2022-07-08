@@ -31,17 +31,21 @@ $app->get('/appreciate', function (Request $request, Response $response, array $
     return $renderer->render($response, "appreciate.php", ['saved' => false, 'baseFolder' => $baseFolder]);
 });
 
-$app->post('/appreciate', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
+$app->post('/appreciate', function (Request $request, Response $response, array $args) use ($config, $renderer, $baseFolder) {
     $form = $request->getParsedBody();
     $db = \Khromov\AppreciationJar\Lib\Db::initDb();
 
     $lastId = false;
     
     $appreciation = $form['appreciation'] ?? null;
-    if(is_string($appreciation) && trim($appreciation) !== '') {
+    $name = $form['name'] ?? null;
+
+    $allowedNames = array_map(fn($allowedName) => trim($allowedName), explode(',', $config['names']));
+
+    if(in_array($name, $allowedNames) && is_string($appreciation) && trim($appreciation) !== '') {
         $trimmed_appreciation = trim($appreciation);
             
-        $params = [time(), $trimmed_appreciation, ''];
+        $params = [time(), $trimmed_appreciation, $name];
 
         // Prepare and execute the SQL statement
         $stmt = $db->prepare('INSERT INTO appreciations(time, text, author) VALUES(?, ?, ?);');

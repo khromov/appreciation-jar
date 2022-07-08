@@ -11,10 +11,14 @@
                 <?php echo $saved ? 'Your appreciation has<br/> been saved!' : 'Oh no, something<br/> went wrong!'; ?>
             </h1>
             <p class="mt-4 mb-6 text-center px-6">
-                <?php echo $saved ? 'Its unique, non-fungible number is <strong>'. $id .'</strong> and it is on its way through cyberspace into your partners heart.' : 'Please reload and try again. Remember that an appreciation can\'t be empty!'; ?>
+                <?php echo $saved ? 'Its unique, non-fungible number is <strong>'. $id .'</strong> and it is on its way through cyberspace into your partners heart.' : 'Please try again. Remember that you must use an allowed name and that appreciations can\'t be empty!'; ?>
             </p>
             <p class="text-center mb-4">
-                <a href="<?php echo $baseFolder; ?>" class="form-input border px-4 py-2 rounded-lg border-gray-400"><?php echo $saved ? 'Send another' : 'Try again'; ?></a>
+                <?php if($saved): ?>
+                    <a href="<?php echo $baseFolder; ?>" class="form-input border px-4 py-2 rounded-lg border-gray-400">Send another</a>
+                <?php else: ?>
+                    <a href="#" onclick="window.history.go(-1); return false;" class="form-input border px-4 py-2 rounded-lg border-gray-400">Try again</a>
+                <?php endif; ?>
             </p>
         </div>
     </div>
