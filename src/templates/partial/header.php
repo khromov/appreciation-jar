@@ -1,4 +1,4 @@
-<?php $config = getConfig(); ?>
+<?php $config = \Khromov\AppreciationJar\Lib\Helpers::getConfig(); ?>
 <!doctype html>
 <html>
 <head>

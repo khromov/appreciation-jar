@@ -3,11 +3,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Views\PhpRenderer;
+use Khromov\AppreciationJar\Lib\Helpers;
+use Khromov\AppreciationJar\Lib\Db;
 
 require __DIR__ . '/../vendor/autoload.php';
-require './helpers.php';
 
-$config = getConfig();
+$config = Helpers::getConfig();
+$db = Db::initialize();
 
 if (class_exists('PDO')) {
     if (!in_array("sqlite", PDO::getAvailableDrivers())) {
@@ -32,9 +34,8 @@ $app->get('/appreciate', function (Request $request, Response $response, array $
     return $renderer->render($response, "appreciate.php", ['saved' => false, 'baseFolder' => $baseFolder]);
 });
 
-$app->post('/appreciate', function (Request $request, Response $response, array $args) use ($config, $renderer, $baseFolder) {
+$app->post('/appreciate', function (Request $request, Response $response, array $args) use ($db, $config, $renderer, $baseFolder) {
     $form = $request->getParsedBody();
-    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
 
     $lastId = false;
     
@@ -66,9 +67,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
 });
 
 
-$app->get('/admin/{secret}', function (Request $request, Response $response, array $args) use ($config, $renderer, $baseFolder) {
-    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
-
+$app->get('/admin/{secret}', function (Request $request, Response $response, array $args) use ($db, $config, $renderer, $baseFolder) {
     $secret = $args['secret'] ?? null;
 
     if($secret && $secret === $config['secret']) {
@@ -85,11 +84,9 @@ $app->get('/admin/{secret}', function (Request $request, Response $response, arr
     }
 });
 
-$app->post('/admin/delete/{id}', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder, $config) {
-    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
+$app->post('/admin/delete/{id}', function (Request $request, Response $response, array $args) use ($db, $renderer, $baseFolder, $config) {
     $form = $request->getParsedBody();
     $secret = $form['secret'] ?? null;
-
 
     if($secret && $secret === $config['secret']) {
         // Prepare and execute the SQL statement
@@ -104,9 +101,7 @@ $app->post('/admin/delete/{id}', function (Request $request, Response $response,
     }
 });
 
-$app->get('/appreciation/{id}', function(Request $request, Response $response, array $args) {
-    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
-
+$app->get('/appreciation/{id}', function(Request $request, Response $response, array $args) use($db) {
     $id = $args['id'] ?? 0;
 
     // Prepare and execute the SQL statement
@@ -127,26 +122,22 @@ $app->get('/appreciation/{id}', function(Request $request, Response $response, a
 });
 
 // Test to increment values
-$app->get('/increment', function(Request $request, Response $response, array $args) {
-    $db = \Khromov\AppreciationJar\Lib\Db::initDb();
-
+$app->get('/increment', function(Request $request, Response $response, array $args) use($db) {
     $lastUpdateStatement = $db->prepare("SELECT * FROM metadata WHERE key = ?");
     $lastUpdateStatement->execute(['lastUpdate']);
     $lastUpdate = intval($lastUpdateStatement->fetch()['value']);
 
     $currentTime = time();
 
+    // TODO: Remove true
     if(true || ($currentTime - $lastUpdate) > 86400) {
 
-        $lastMessageIdStatement = $db->prepare("SELECT id FROM appreciations ORDER by id DESC");
-        $lastMessageIdStatement->execute();
-        $lastMessageId = intval($lastMessageIdStatement->fetch()['id']);
-        
-        $currentCountStatement = $db->prepare("SELECT * FROM metadata WHERE key = ?");
-        $currentCountStatement->execute(['latestAppreciation']);
-        $currentCount = intval($currentCountStatement->fetch()['value']);
+        $lastMessageId = Db::getLastMessageId();
+        $currentCount = intval(Db::getMetadata('latestAppreciation', 0));
 
         if($currentCount < $lastMessageId) {
+            //var_dump("hello", $lastMessageId);
+            //die();
             $incrementedCount = $currentCount + 1;
 
             $stmt = $db->prepare("INSERT INTO metadata(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value = ?;");
