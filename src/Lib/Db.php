@@ -68,4 +68,27 @@ class Db {
         $lastMessageIdStatement->execute();
         return intval($lastMessageIdStatement->fetch()['id']);
     }
+
+    /**
+     * Will increment the latest appreciation id at most every 24 hours
+     * 
+     * @return void 
+     */
+    static function maybeIncrementLatestAppreciationId() {
+        $lastUpdate = intval(self::getMetadata('lastUpdate'));
+        $currentTime = time();
+    
+        if(($currentTime - $lastUpdate) > 86400) {
+    
+            $lastMessageId = self::getLastMessageId();
+            $currentCount = intval(self::getMetadata('latestAppreciation', 0));
+    
+            if($currentCount < $lastMessageId) {
+                $incrementedCount = $currentCount + 1;
+    
+                self::setMetadata('latestAppreciation', $incrementedCount);
+                self::setMetadata('lastUpdate', $currentTime);
+            }
+        }
+    }
 }

@@ -25,6 +25,7 @@ $app = AppFactory::create();
 $renderer = new PhpRenderer('./templates');
 
 $app->get('/', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
+    Db::maybeIncrementLatestAppreciationId();
     $adverbs = ['how', 'when', 'that'];
     $randomAdverb = $adverbs[rand(0, count($adverbs)-1)];
     return $renderer->render($response, "form.php", ['adverb' => $randomAdverb]);
@@ -123,24 +124,7 @@ $app->get('/appreciation/{id}', function(Request $request, Response $response, a
 
 // Test to increment values
 $app->get('/increment', function(Request $request, Response $response, array $args) use($db) {
-    $lastUpdate = intval(Db::getMetadata('lastUpdate'));
-    $currentTime = time();
-
-    if(($currentTime - $lastUpdate) > 86400) {
-
-        $lastMessageId = Db::getLastMessageId();
-        $currentCount = intval(Db::getMetadata('latestAppreciation', 0));
-
-        if($currentCount < $lastMessageId) {
-            $incrementedCount = $currentCount + 1;
-
-            Db::setMetadata('latestAppreciation', $incrementedCount);
-            Db::setMetadata('lastUpdate', $currentTime);
-
-            var_dump(Db::getMetadata('latestAppreciation'), Db::getMetadata('lastUpdate'));
-        }
-    }
-
+    Db::maybeIncrementLatestAppreciationId();
     $newCount = intval(Db::getMetadata('latestAppreciation', 0));
 
     $response->getBody()->write("OK - latest appreciation: " . json_encode($newCount));

@@ -1,4 +1,4 @@
 vendor
 config.php
 node_modules
-src/dist/*
+# src/dist/*
