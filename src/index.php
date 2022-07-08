@@ -63,10 +63,23 @@ $app->post('/appreciate', function (Request $request, Response $response, array 
     return $renderer->render($response, "appreciate.php", ['saved' => $saved, 'baseFolder' => $baseFolder, 'id' => $lastId]);
 });
 
+$app->get('/latest', function (Request $request, Response $response, array $args) use ($db, $config, $renderer, $baseFolder) {
+    $timeAgo = new Westsworld\TimeAgo();
+    $appreciation = Db::getLatestAppreciation();
+
+    if($appreciation) {
+        $appreciationTime = DateTime::createFromFormat( 'U', $appreciation['time']);
+        $appreciation['timeFormatted'] = $timeAgo->inWords($appreciationTime);
+
+        return $renderer->render($response, "latest.php", ['appreciation' => $appreciation]);
+    } else {
+        return $renderer->render($response, "error.php", [ 'errorMessage' => 'Could not find the appreciation, maybe it was deleted?', 'baseFolder' => $baseFolder]);
+    }
+});
+
 $app->get('/admin', function (Request $request, Response $response, array $args) use ($config, $renderer, $baseFolder) {
     return $renderer->render($response, "error.php", [ 'errorMessage' => 'Don\'t forget to add the password, like this: /admin/<password>', 'baseFolder' => $baseFolder]);
 });
-
 
 $app->get('/admin/{secret}', function (Request $request, Response $response, array $args) use ($db, $config, $renderer, $baseFolder) {
     $secret = $args['secret'] ?? null;
@@ -77,7 +90,7 @@ $app->get('/admin/{secret}', function (Request $request, Response $response, arr
         $stmt->execute();
         
         // Get the results as an array with column names as array keys
-        $appreciations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $appreciations = $stmt->fetchAll();
 
         return $renderer->render($response, "admin.php", ['baseFolder' => $baseFolder, 'appreciations' => $appreciations, 'secret' => $secret]);
     } else {
@@ -105,17 +118,25 @@ $app->post('/admin/delete/{id}', function (Request $request, Response $response,
 $app->get('/appreciation/{id}', function(Request $request, Response $response, array $args) use($db) {
     $id = $args['id'] ?? 0;
 
+    if($id === 'latest') {
+        $id = intval(Db::getMetadata('latestAppreciation', 0));
+    }
+
     // Prepare and execute the SQL statement
     $stmt = $db->prepare("SELECT * FROM appreciations WHERE id = ?");
     $stmt->execute([intval($id)]);
-    $appreciation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $appreciation = $stmt->fetch();
 
-    if(sizeof($appreciation) === 0) {
+    if(!$appreciation) {
         return $response
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(404);
     } else {
-        $response->getBody()->write(json_encode($appreciation[0]));
+        $timeAgo = new Westsworld\TimeAgo();
+        $appreciationTime = DateTime::createFromFormat( 'U', $appreciation['time']);
+        $appreciation['timeFormatted'] = $timeAgo->inWords($appreciationTime);
+
+        $response->getBody()->write(json_encode($appreciation));
         return $response
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(200);

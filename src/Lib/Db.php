@@ -20,6 +20,7 @@ class Db {
             // Refactor to use class state
             $db = new \PDO($dsn);
             $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
             self::$db = $db;
             return $db;
         } catch (\PDOException $e) {
@@ -55,7 +56,7 @@ class Db {
     static function setMetadata($key, $value) {
         $statement = self::$db->prepare("INSERT INTO metadata(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value = ?;");
         $statement->execute([$key, $value, $value]);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll();
     }
 
     /**
@@ -64,9 +65,21 @@ class Db {
      * @throws PDOException 
      */
     static function getLastMessageId() {
-        $lastMessageIdStatement = self::$db->prepare("SELECT id FROM appreciations ORDER by id DESC");
+        $lastMessageIdStatement = self::$db->prepare("SELECT id FROM appreciations ORDER by id DESC LIMIT 1");
         $lastMessageIdStatement->execute();
         return intval($lastMessageIdStatement->fetch()['id']);
+    }
+
+    /**
+     * Get latest "published" appreciation
+     * 
+     * @return mixed 
+     */
+    static function getLatestAppreciation() {
+        $latestId = intval(self::getMetadata('latestAppreciation', 0));
+        $appreciationStatement = self::$db->prepare("SELECT * FROM appreciations WHERE id = ?");
+        $appreciationStatement->execute([$latestId]);
+        return $appreciationStatement->fetch();
     }
 
     /**
