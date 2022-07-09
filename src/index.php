@@ -24,12 +24,16 @@ $baseFolder = $config['baseFolder'];
 
 $app = AppFactory::create();
 
+if($baseFolder !== '') {
+    $app->setBasePath($baseFolder);
+}
+
 $renderer = new PhpRenderer('./templates');
 
 $app->get('/', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
     $adverbs = ['how', 'when', 'that'];
     $randomAdverb = $adverbs[rand(0, count($adverbs)-1)];
-    return $renderer->render($response, "form.php", ['adverb' => $randomAdverb]);
+    return $renderer->render($response, "form.php", ['adverb' => $randomAdverb, 'baseFolder' => $baseFolder]);
 });
 
 $app->get('/appreciate', function (Request $request, Response $response, array $args) use ($renderer, $baseFolder) {
@@ -72,7 +76,7 @@ $app->get('/latest', function (Request $request, Response $response, array $args
         $appreciationTime = DateTime::createFromFormat( 'U', $appreciation['time']);
         $appreciation['timeFormatted'] = $timeAgo->inWords($appreciationTime);
 
-        return $renderer->render($response, "latest.php", ['appreciation' => $appreciation]);
+        return $renderer->render($response, "latest.php", ['appreciation' => $appreciation, 'baseFolder' => $baseFolder]);
     } else {
         return $renderer->render($response, "error.php", [ 'errorMessage' => 'Could not find the appreciation, maybe it was deleted?', 'baseFolder' => $baseFolder]);
     }
@@ -109,7 +113,7 @@ $app->post('/admin/delete/{id}', function (Request $request, Response $response,
         $stmt->execute([intval($args['id'])]);
 
         return $response
-        ->withHeader('Location', "${baseFolder}admin/{$secret}")
+        ->withHeader('Location', "${baseFolder}/admin/{$secret}")
         ->withStatus(302);
     } else { // Error page
         return $renderer->render($response, "appreciate.php", ['saved' => false, 'baseFolder' => $baseFolder]);

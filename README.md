@@ -1,6 +1,8 @@
 # Apprectiation Jar
 
-This is a small web application for creating a virtual [appreciation/gratitude jar](https://www.mindbodygreen.com/0-11062/how-to-create-a-gratitude-jar.html). It allows you to leave appreciations for your partner that can be shown on a screen or consumed via a JSON API.
+This is a small web application for creating a virtual [appreciation/gratitude jar](https://www.mindbodygreen.com/0-11062/how-to-create-a-gratitude-jar.html). It allows you to leave appreciations for your partner that can be shown on a screen or consumed via a JSON API. 
+
+The appreciations are stored in a SQLite database under `db/appreciations.sqlite`)
 
 ![](screenshots/appreciation-screenshot.png)
 
@@ -66,8 +68,6 @@ http://localhost:8080/api/appreciation/latest
 Any appreciation by ID:
 http://localhost:8080/api/appreciation/<id>
 
-
-
 ## Dump schema 
 
 ```
@@ -78,4 +78,4 @@ sqlite3 db/_appreciations.sqlite .schema > schema.sql
 
 #### Subfolder configuration
 
-If you put this project into a subfolder, edit the `$baseFolder` variable in `index.php`
+If you put this project into a subfolder, edit the `baseFolder` configuration in `config.php` to eg. `/appreciations`

@@ -7,7 +7,7 @@
   <?php if($config['development'] === 'true'): ?>
     <script src="https://cdn.tailwindcss.com?plugins=forms,aspect-ratio,line-clamp"></script>
   <?php else: ?>
-    <link href="/dist/output.css" rel="stylesheet">
+    <link href="<?php echo $config['baseFolder']; ?>/dist/output.css" rel="stylesheet">
   <?php endif; ?>
 </head>
 <style>

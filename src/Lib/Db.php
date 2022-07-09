@@ -136,7 +136,7 @@ class Db {
         $lastUpdate = intval(self::getMetadata('lastUpdate'));
         $currentTime = time();
     
-        if($overrideTimer || ($currentTime - $lastUpdate) > 86400) {
+        if($overrideTimer || $lastUpdate === 0 || ($currentTime - $lastUpdate) > 86400) {
     
             $lastMessageId = self::getLastMessageId();
             $currentCount = intval(self::getMetadata('latestAppreciation', 0));

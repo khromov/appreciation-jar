@@ -3,9 +3,9 @@
     <div style="width: 650px;" class="max-w-full mb-auto mx-auto px-4 shrink-0">
         <div class="mx-auto mt-4 border-2 rounded-lg bg-white pb-4">
             <?php if($saved): ?>
-                <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>images/arabica-452.png" alt="three hearts" />
+                <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>/images/arabica-452.png" alt="three hearts" />
             <?php else: ?>
-                <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>images/bermuda-111.png" alt="broken heart" />
+                <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>/images/bermuda-111.png" alt="broken heart" />
             <?php endif; ?>
             <h1 class="text-2xl font-bold text-center mt-4 px-6">
                 <?php echo $saved ? 'Your appreciation has<br/> been saved!' : 'Oh no, something<br/> went wrong!'; ?>
@@ -15,7 +15,7 @@
             </p>
             <p class="text-center mb-4">
                 <?php if($saved): ?>
-                    <a href="<?php echo $baseFolder; ?>" class="form-input border px-4 py-2 rounded-lg border-gray-400">Send another</a>
+                    <a href="<?php echo $baseFolder ? $baseFolder : '/'; ?>" class="form-input border px-4 py-2 rounded-lg border-gray-400">Send another</a>
                 <?php else: ?>
                     <a href="#" onclick="window.history.go(-1); return false;" class="form-input border px-4 py-2 rounded-lg border-gray-400">Try again</a>
                 <?php endif; ?>

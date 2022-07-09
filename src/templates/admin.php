@@ -11,7 +11,7 @@ $escaper = new Laminas\Escaper\Escaper('utf-8');
                 <li class="mb-2">
                     <strong><?php echo $escaper->escapeHtml($appreciation['id']); ?></strong> -
                     <?php echo mb_substr($escaper->escapeHtml($appreciation['text']), 0, 10); ?>... 
-                    <form action="/admin/delete/<?php echo intval($appreciation['id']); ?>" method="post" class="inline">
+                    <form action="<?php echo $baseFolder; ?>/admin/delete/<?php echo intval($appreciation['id']); ?>" method="post" class="inline">
                         <input type="hidden" name="secret" value="<?php echo $escaper->escapeHtmlAttr($secret); ?>" />
                         <input type="submit" value="Delete" class="form-input border px-1 py-1 rounded-lg border-gray-400" style="cursor: pointer;">
                     </form>
