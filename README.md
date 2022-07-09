@@ -79,6 +79,8 @@ docker build . -t appreciation-jar
 docker run -e SECRET=opensesame -e NAMES=Alice,Bob -e DEVELOPMENT=false -v $(pwd)/db/appreciations.sqlite:/var/www/db/appreciations.sqlite:rw -p 8080:8080 appreciation-jar
 ```
 
+You can also run the `ghcr.io/khromov/appreciation-jar/appreciation-jar:latest` image directly.
+
 ## Dump schema 
 
 ```bash
