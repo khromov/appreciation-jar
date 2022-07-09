@@ -68,9 +68,20 @@ http://localhost:8080/api/appreciation/latest
 Any appreciation by ID:
 http://localhost:8080/api/appreciation/<id>
 
+## Running in Docker
+
+A complete example:
+
+```bash
+touch db/appreciations.sqlite
+chmod 777 db/appreciations.sqlite # Set appropriate permissions for your environment
+docker build . -t appreciation-jar
+docker run -e SECRET=opensesame -e NAMES=Alice,Bob -e DEVELOPMENT=false -v $(pwd)/db/appreciations.sqlite:/var/www/db/appreciations.sqlite:rw -p 8080:8080 appreciation-jar
+```
+
 ## Dump schema 
 
-```
+```bash
 sqlite3 db/_appreciations.sqlite .schema > schema.sql
 ```
 
