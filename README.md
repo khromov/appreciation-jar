@@ -70,6 +70,16 @@ http://localhost:8080/api/appreciation/<id>
 
 ## Running in Docker
 
+#### docker-compose
+
+```bash
+touch db/appreciations.sqlite
+chmod 777 db/appreciations.sqlite # Set appropriate permissions for your environment
+docker-compose up --build
+```
+
+#### Vanilla Docker
+
 A complete example:
 
 ```bash
