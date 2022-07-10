@@ -19,3 +19,4 @@
 </style>
 </head>
 <body class="bg-gradient-to-b from-pink-500 via-red-500 to-yellow-500">
+  <div class="flex flex-col h-screen justify-between">

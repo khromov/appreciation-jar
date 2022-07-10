@@ -69,16 +69,27 @@ $app->post('/appreciate', function (Request $request, Response $response, array 
 });
 
 $app->get('/latest', function (Request $request, Response $response, array $args) use ($db, $config, $renderer, $baseFolder) {
-    $timeAgo = new Westsworld\TimeAgo();
     $appreciation = Db::getLatestAppreciation();
 
     if($appreciation) {
-        $appreciationTime = DateTime::createFromFormat( 'U', $appreciation['time']);
-        $appreciation['timeFormatted'] = $timeAgo->inWords($appreciationTime);
-
-        return $renderer->render($response, "latest.php", ['appreciation' => $appreciation, 'baseFolder' => $baseFolder]);
+        return $renderer->render($response, "latest.php", ['appreciation' => Helpers::enrichAppreciation($appreciation), 'baseFolder' => $baseFolder]);
     } else {
         return $renderer->render($response, "error.php", [ 'errorMessage' => 'Could not find the appreciation, maybe it was deleted?', 'baseFolder' => $baseFolder]);
+    }
+});
+
+$app->get('/archive', function (Request $request, Response $response, array $args) use ($db, $config, $renderer, $baseFolder) {
+    $timeAgo = new Westsworld\TimeAgo();
+    $appreciations = Db::getVisibleAppreciations();
+
+    $appreciations = array_map(function($appreciation) {
+        return Helpers::enrichAppreciation($appreciation);
+    }, $appreciations);
+    
+    if(sizeof($appreciations) > 0) {
+        return $renderer->render($response, "archive.php", ['appreciations' => $appreciations, 'baseFolder' => $baseFolder]);
+    } else {
+        return $renderer->render($response, "error.php", [ 'errorMessage' => 'Could not find any appreciations.', 'baseFolder' => $baseFolder]);
     }
 });
 

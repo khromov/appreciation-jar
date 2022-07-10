@@ -128,6 +128,18 @@ class Db {
     }
 
     /**
+     * Get latest "published" appreciation
+     * 
+     * @return mixed 
+     */
+    static function getVisibleAppreciations() {
+        $latestId = intval(self::getMetadata('latestAppreciation', 0));
+        $appreciationStatement = self::$db->prepare("SELECT * FROM appreciations WHERE id <= ? ORDER by time DESC");
+        $appreciationStatement->execute([$latestId]);
+        return $appreciationStatement->fetchAll();
+    }
+
+    /**
      * Will increment the latest appreciation id at most every 24 hours
      * 
      * @return void 

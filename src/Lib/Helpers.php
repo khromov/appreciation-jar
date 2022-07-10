@@ -13,4 +13,19 @@ class Helpers {
         $config = require '../config.php';
         return $config;
     }
+
+    /**
+     * Enriches appreciation with necessary data
+     * for view
+     * 
+     * @param mixed $appreciation 
+     * @return mixed 
+     */
+    static function enrichAppreciation($appreciation) {
+        $timeAgo = new \Westsworld\TimeAgo();
+        $appreciationTime = \DateTime::createFromFormat( 'U', $appreciation['time']);
+        $appreciation['timeFormatted'] = $timeAgo->inWords($appreciationTime);
+
+        return $appreciation;
+    }
 }
