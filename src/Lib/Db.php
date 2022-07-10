@@ -135,9 +135,11 @@ class Db {
     static function maybeIncrementLatestAppreciationId($overrideTimer = false) {
         $lastUpdate = intval(self::getMetadata('lastUpdate'));
         $currentTime = time();
+        $config = Helpers::getConfig();
+
+        if($overrideTimer || $lastUpdate === 0 || ($currentTime - $lastUpdate) > intval($config['new_appreciation_every_x_seconds'])) {
     
-        if($overrideTimer || $lastUpdate === 0 || ($currentTime - $lastUpdate) > 86400) {
-    
+
             $lastMessageId = self::getLastMessageId();
             $currentCount = intval(self::getMetadata('latestAppreciation', 0));
     

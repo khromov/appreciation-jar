@@ -19,7 +19,7 @@ $escaper = new Laminas\Escaper\Escaper('utf-8');
                 <?php endforeach; ?>
             </ul>
             <div class="px-4">
-                <a href="<?php echo $baseFolder; ?>">Back</a>
+                <a href="<?php echo $baseFolder ? $baseFolder : '/'; ?>">Back</a>
             </div>
         </div>
     </div>
