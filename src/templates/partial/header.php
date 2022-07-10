@@ -9,10 +9,13 @@
   <?php else: ?>
     <link href="<?php echo $config['baseFolder']; ?>/dist/output.css" rel="stylesheet">
   <?php endif; ?>
-</head>
-<style>
+  <?php if($config['noindex'] === 'true'): ?>
+    <meta name="robots" content="noindex">
+  <?php endif; ?>
+  <style>
     body {
         background-attachment: fixed;
     }
 </style>
+</head>
 <body class="bg-gradient-to-b from-pink-500 via-red-500 to-yellow-500">
