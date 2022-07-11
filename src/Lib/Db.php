@@ -112,7 +112,7 @@ class Db {
     static function getLastMessageId() {
         $lastMessageIdStatement = self::$db->prepare("SELECT id FROM appreciations ORDER by id DESC LIMIT 1");
         $lastMessageIdStatement->execute();
-        return intval($lastMessageIdStatement->fetch()['id']);
+        return intval($lastMessageIdStatement->fetch()['id'] ?? 0);
     }
 
     /**
@@ -125,6 +125,13 @@ class Db {
         $appreciationStatement = self::$db->prepare("SELECT * FROM appreciations WHERE id = ?");
         $appreciationStatement->execute([$latestId]);
         return $appreciationStatement->fetch();
+    }
+
+    static function getNextAppreciationId() {
+        $latestId = intval(self::getMetadata('latestAppreciation', 0));
+        $appreciationStatement = self::$db->prepare("SELECT id FROM appreciations WHERE id > ? LIMIT 1");
+        $appreciationStatement->execute([$latestId]);
+        return intval($appreciationStatement->fetch()['id'] ?? 0);
     }
 
     /**
@@ -150,15 +157,11 @@ class Db {
         $config = Helpers::getConfig();
 
         if($overrideTimer || $lastUpdate === 0 || ($currentTime - $lastUpdate) > intval($config['new_appreciation_every_x_seconds'])) {
-    
 
-            $lastMessageId = self::getLastMessageId();
-            $currentCount = intval(self::getMetadata('latestAppreciation', 0));
+            $nextMessageId = self::getNextAppreciationId();
     
-            if($currentCount < $lastMessageId) {
-                $incrementedCount = $currentCount + 1;
-    
-                self::setMetadata('latestAppreciation', $incrementedCount);
+            if($nextMessageId !== 0) {    
+                self::setMetadata('latestAppreciation', $nextMessageId);
                 self::setMetadata('lastUpdate', $currentTime);
             }
         }
