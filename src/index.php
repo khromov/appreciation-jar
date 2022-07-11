@@ -108,7 +108,7 @@ $app->get('/admin/{secret}', function (Request $request, Response $response, arr
         // Get the results as an array with column names as array keys
         $appreciations = $stmt->fetchAll();
 
-        return $renderer->render($response, "admin.php", ['baseFolder' => $baseFolder, 'appreciations' => $appreciations, 'secret' => $secret]);
+        return $renderer->render($response, "admin.php", ['baseFolder' => $baseFolder, 'appreciations' => $appreciations, 'secret' => $secret, 'currentlyPublished' => intval(Db::getMetadata('latestAppreciation', 0))]);
     } else {
         return $renderer->render($response, "error.php", [ 'errorMessage' => '🤷‍♂️', 'baseFolder' => $baseFolder]);
     }

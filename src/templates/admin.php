@@ -5,6 +5,7 @@ $escaper = new Laminas\Escaper\Escaper('utf-8');
     <div style="width: 650px;" class="max-w-full mb-auto mx-auto px-4 shrink-0">
         <div class="mx-auto mt-4 border-2 rounded-lg bg-white pb-4">
             <h1 class="mt-4 text-3xl px-4">Appreciations</h1>
+            <h5 class="mt-4 font-bold px-4">Currently published:  <?php echo $currentlyPublished; ?></h5>
             <ul class="list-disc ml-4 px-4 mt-4 mb-2">
                 <?php foreach($appreciations as $appreciation): ?>
                 <li class="mb-2">
