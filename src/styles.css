@@ -1,3 +1,78 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --heart-size: 90px;
+  }
+
+/* Heart animation */
+@keyframes radius {
+    from { 
+      width: 0;
+      height: 0;
+      opacity: 1;
+    }
+    to { 
+      width: var(--heart-size);
+      height: var(--heart-size);
+      opacity: 0;
+    }
+  }
+
+  .like {
+    cursor: pointer;
+  }
+  
+  .like-wrapper {
+    position: relative;
+    width: var(--heart-size);
+    height: var(--heart-size);
+  }
+  
+  .animation-wrapper, .heart-wrapper {
+    position: absolute;
+  }
+  
+  .animation-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: var(--heart-size);
+    width: var(--heart-size);
+  }
+  
+  .heart-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: var(--heart-size);
+    width: var(--heart-size);
+  }
+  
+  .animation {
+    border: 2px solid red;
+    margin: auto;
+  
+    width: 0px;
+    height: 0px;
+    border-radius: 50%;
+    
+    animation: radius 2s infinite;
+  }
+  
+  .heart {
+
+    background-color: white;
+
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: auto;
+  }
+
+  .heart > img {
+    margin-top: 10px;
+    width: 50px;
+    height: 44px;
+    margin-left: auto;
+    margin-right: auto;
+  }

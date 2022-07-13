@@ -72,7 +72,7 @@ $app->get('/latest', function (Request $request, Response $response, array $args
     $appreciation = Db::getLatestAppreciation();
 
     if($appreciation) {
-        return $renderer->render($response, "latest.php", ['appreciation' => Helpers::enrichAppreciation($appreciation), 'baseFolder' => $baseFolder]);
+        return $renderer->render($response, "latest.php", ['appreciation' => Helpers::enrichAppreciation($appreciation), 'baseFolder' => $baseFolder, 'latest' => true]);
     } else {
         return $renderer->render($response, "error.php", [ 'errorMessage' => 'Could not find the appreciation, maybe it was deleted?', 'baseFolder' => $baseFolder]);
     }

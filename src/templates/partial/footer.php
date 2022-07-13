@@ -6,5 +6,13 @@
         <a href="https://icons8.com/illustrations/style--woolly">Woolly</a>
     </div>
 </div>
+
+<script type="module">
+    window.jsConfettiInstance = new window.JSConfetti();
+
+    window.jsConfettiInstance.addConfetti({
+      emojis: ['❤️', '💙', '💖', '💘', '💗', '🌸'],
+    });
+</script>
 </body>
 </html>
