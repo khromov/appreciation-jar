@@ -1,6 +1,7 @@
 <?php 
 $escaper = new Laminas\Escaper\Escaper('utf-8');
 $latest = $latest ?? false;
+$count = $appreciation['count'] ?? 0;
 ?>
 <div class="mx-auto mt-4 border-2 rounded-lg bg-white pb-4">
     <div class="like mx-auto flex flex-row mt-2" style="max-width: 160px;">
@@ -17,10 +18,13 @@ $latest = $latest ?? false;
             </div>
         </div>
         <div class="like-count text-5xl mt-5 w-full text-center">
-          0
+          <?php echo $escaper->escapeHtml($count); ?>
         </div>
         <?php else: ?>
-            <img style="max-width: 200px" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>/images/arabica-452.png" alt="three hearts" />
+            <img style="width: 50px; height: 44px;" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>/images/arabica-red-heart.png" alt="heart" />
+            <div class="like-count text-5xl mt-7 ml-6 w-full text-center">
+                <?php echo $escaper->escapeHtml($count); ?>
+            </div>
         <?php endif; ?>
     </div>
 
