@@ -20,6 +20,7 @@
         </form>
     </div>
     <div class="text-center pt-2">
+        <a class="text-white" href="<?php echo $basePath ?>/latest">✨ View latest</a>
         <a class="text-white" href="<?php echo $basePath ?>/archive">🗓️ View all published</a>
     </div>
 </div>

@@ -9,7 +9,7 @@ echo $this->fetch('./partial/header.php');
         }
     ?>
     <div class="text-center pt-2 pb-2">
-        <a class="text-white" href="<?php echo $basePath ?>/latest">🗓️ View latest</a>
+        <a class="text-white" href="<?php echo $basePath ?>/latest">✨ View latest</a>
     </div>
 </div>
 <script>
