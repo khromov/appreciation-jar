@@ -25,6 +25,7 @@ class Helpers {
         $timeAgo = new \Westsworld\TimeAgo();
         $appreciationTime = \DateTime::createFromFormat( 'U', $appreciation['time']);
         $appreciation['timeFormatted'] = $timeAgo->inWords($appreciationTime);
+        $appreciation['count'] = Db::getLikes(intval($appreciation['id']));
 
         return $appreciation;
     }

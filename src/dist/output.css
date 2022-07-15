@@ -832,6 +832,18 @@ select {
   margin-top: 0.5rem;
 }
 
+.mt-5 {
+  margin-top: 1.25rem;
+}
+
+.mt-7 {
+  margin-top: 1.75rem;
+}
+
+.ml-6 {
+  margin-left: 1.5rem;
+}
+
 .inline {
   display: inline;
 }
@@ -878,6 +890,10 @@ select {
 
 .list-disc {
   list-style-type: disc;
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-col {
@@ -998,9 +1014,9 @@ select {
   line-height: 2.5rem;
 }
 
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
 }
 
 .font-bold {
@@ -1014,4 +1030,92 @@ select {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+:root {
+  --heart-size: 90px;
+}
+
+/* Heart animation */
+
+@-webkit-keyframes radius {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+
+  to {
+    width: var(--heart-size);
+    height: var(--heart-size);
+    opacity: 0;
+  }
+}
+
+@keyframes radius {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+
+  to {
+    width: var(--heart-size);
+    height: var(--heart-size);
+    opacity: 0;
+  }
+}
+
+.like {
+  cursor: pointer;
+}
+
+.like-wrapper {
+  position: relative;
+  width: var(--heart-size);
+  height: var(--heart-size);
+}
+
+.animation-wrapper, .heart-wrapper {
+  position: absolute;
+}
+
+.animation-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: var(--heart-size);
+  width: var(--heart-size);
+}
+
+.heart-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: var(--heart-size);
+  width: var(--heart-size);
+}
+
+.animation {
+  border: 2px solid red;
+  margin: auto;
+  width: 0px;
+  height: 0px;
+  border-radius: 50%;
+  -webkit-animation: radius 2s infinite;
+          animation: radius 2s infinite;
+}
+
+.heart {
+  background-color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.heart > img {
+  margin-top: 10px;
+  width: 50px;
+  height: 44px;
+  margin-left: auto;
+  margin-right: auto;
 }

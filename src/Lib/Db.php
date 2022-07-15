@@ -41,16 +41,24 @@ class Db {
 
             self::setMetadata('dbVersion', 1);
         }
+        
+        if(intval(self::getMetadata('dbVersion')) < 2) {
+            $createLikesStatement = $db->prepare('
+                CREATE TABLE IF NOT EXISTS "likes" (
+                    "appreciations_id" INTEGER UNIQUE NOT NULL,
+                    "count" INTEGER DEFAULT 1 NOT NULL,
+                    PRIMARY KEY("appreciations_id")
+                );
+            ');
+
+            $createLikesStatement->execute();
+            
+            self::setMetadata('dbVersion', 2);
+        }
 
         // Any additional migrations would go here
 
         return $db;
-    }
-
-    static function createSchema() {
-        /*
-
-        */
     }
 
     static function get() {
@@ -81,7 +89,7 @@ class Db {
      * 
      * @param string $key 
      * @param mixed $defaultValue 
-     * @return mixed 
+     * @return string | null | mixed
      * @throws PDOException 
      */
     static function getMetadata($key, $defaultValue = null) {
@@ -134,6 +142,12 @@ class Db {
         return intval($appreciationStatement->fetch()['id'] ?? 0);
     }
 
+    static function getAppreciation($id) {
+        $appreciationStatement = self::$db->prepare("SELECT * FROM appreciations WHERE id = ?");
+        $appreciationStatement->execute([$id]);
+        return $appreciationStatement->fetch();
+    }
+
     /**
      * Get latest "published" appreciation
      * 
@@ -165,5 +179,21 @@ class Db {
                 self::setMetadata('lastUpdate', $currentTime);
             }
         }
+    }
+
+    static function addLike($appreciations_id) {
+        $likeStatement = self::$db->prepare("INSERT OR REPLACE INTO likes (appreciations_id, count) VALUES (
+            ?,  
+            (SELECT count FROM likes WHERE appreciations_id = ?) + 1)"
+        );
+
+        $ret = $likeStatement->execute([$appreciations_id, $appreciations_id]);
+        return $ret;
+    }
+
+    static function getLikes($appreciations_id) {
+        $appreciationStatement = self::$db->prepare("SELECT count FROM likes WHERE appreciations_id = ?");
+        $appreciationStatement->execute([$appreciations_id]);
+        return intval($appreciationStatement->fetch()['count'] ?? 0);
     }
 }
