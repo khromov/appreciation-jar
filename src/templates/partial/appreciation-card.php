@@ -6,7 +6,7 @@ $count = $appreciation['count'] ?? 0;
 <div class="mx-auto mt-4 border-2 rounded-lg bg-white pb-4">
     <div class="like mx-auto flex flex-row mt-2" style="max-width: 160px;">
         <?php if($latest === true): ?>
-        <div class="like-wrapper">
+        <div id="like-heart" data-card-id="<?php echo $escaper->escapeHtmlAttr($appreciation['id']); ?>" class="like-wrapper">
             <div class="animation-wrapper">
                 <div class="animation">
                 </div>
@@ -17,7 +17,7 @@ $count = $appreciation['count'] ?? 0;
                 </div>
             </div>
         </div>
-        <div class="like-count text-5xl mt-5 w-full text-center">
+        <div id="like-count" data-card-id="<?php echo $escaper->escapeHtmlAttr($appreciation['id']); ?>" class="like-count text-5xl mt-5 w-full text-center">
           <?php echo $escaper->escapeHtml($count); ?>
         </div>
         <?php else: ?>

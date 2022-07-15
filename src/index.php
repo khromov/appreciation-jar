@@ -68,6 +68,29 @@ $app->post('/appreciate', function (Request $request, Response $response, array 
     return $renderer->render($response, "appreciate.php", ['saved' => $saved, 'baseFolder' => $baseFolder, 'id' => $lastId]);
 });
 
+$app->post('/api/like', function (Request $request, Response $response, array $args) use ($db, $config, $renderer, $baseFolder) {
+    $form = $request->getParsedBody();
+    
+    $appreciationId = isset($form['appreciationId']) ? intval($form['appreciationId']) : 0;
+
+    $appreciation = Db::getAppreciation($appreciationId);
+
+    if(!$appreciation) {
+        $response->getBody()->write(json_encode(new stdClass)); // Return {}
+
+        return $response
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(404);
+    } else {
+        Db::addLike($appreciationId);
+        $response->getBody()->write(json_encode([ 'likes' => Db::getLikes($appreciationId) ]));
+        return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(200);
+    }
+});
+
+
 $app->get('/latest', function (Request $request, Response $response, array $args) use ($db, $config, $renderer, $baseFolder) {
     $appreciation = Db::getLatestAppreciation();
 

@@ -142,6 +142,12 @@ class Db {
         return intval($appreciationStatement->fetch()['id'] ?? 0);
     }
 
+    static function getAppreciation($id) {
+        $appreciationStatement = self::$db->prepare("SELECT * FROM appreciations WHERE id = ?");
+        $appreciationStatement->execute([$id]);
+        return $appreciationStatement->fetch();
+    }
+
     /**
      * Get latest "published" appreciation
      * 
@@ -181,7 +187,8 @@ class Db {
             (SELECT count FROM likes WHERE appreciations_id = ?) + 1)"
         );
 
-        return $likeStatement->execute([$appreciations_id, $appreciations_id]);
+        $ret = $likeStatement->execute([$appreciations_id, $appreciations_id]);
+        return $ret;
     }
 
     static function getLikes($appreciations_id) {

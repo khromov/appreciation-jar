@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Appreciation Jar</title>
 
-  <script src="<?php echo $config['baseFolder']; ?>/js/js-confetti.browser.js"></script>
-
   <?php if($config['development'] === 'true'): ?>
     <script src="https://cdn.tailwindcss.com?plugins=forms,aspect-ratio,line-clamp"></script>
     
