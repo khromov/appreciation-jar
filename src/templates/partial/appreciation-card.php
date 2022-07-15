@@ -22,7 +22,7 @@ $count = $appreciation['count'] ?? 0;
         </div>
         <?php else: ?>
             <img style="width: 50px; height: 44px;" class="mx-auto mt-8" src="<?php echo $baseFolder; ?>/images/arabica-red-heart.png" alt="heart" />
-            <div class="like-count text-5xl mt-7 ml-6 w-full text-center">
+            <div class="like-count text-5xl mt-7 w-full text-center">
                 <?php echo $escaper->escapeHtml($count); ?>
             </div>
         <?php endif; ?>
