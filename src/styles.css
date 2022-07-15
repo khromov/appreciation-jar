@@ -4,7 +4,12 @@
 
 :root {
     --heart-size: 90px;
-  }
+}
+
+/* https://stackoverflow.com/questions/21003535/anyway-to-prevent-the-blue-highlighting-of-elements-in-chrome-when-clicking-quic */
+body {
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* Heart animation */
 @keyframes radius {
