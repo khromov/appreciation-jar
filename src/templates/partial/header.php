@@ -10,9 +10,9 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,aspect-ratio,line-clamp"></script>
     
     <!-- Uncompiled styles -->
-    <link href="<?php echo $config['baseFolder']; ?>/styles.css" rel="stylesheet">
+    <link href="<?php echo $config['baseFolder']; ?>/styles.css?t=<?php echo time(); ?>" rel="stylesheet">
   <?php else: ?>
-    <link href="<?php echo $config['baseFolder']; ?>/dist/output.css" rel="stylesheet">
+    <link href="<?php echo $config['baseFolder']; ?>/dist/output.css?t=<?php echo time(); ?>" rel="stylesheet">
   <?php endif; ?>
   <?php if($config['noindex'] === 'true'): ?>
     <meta name="robots" content="noindex">

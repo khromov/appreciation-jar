@@ -193,4 +193,6 @@ $app->get('/increment', function(Request $request, Response $response, array $ar
             ->withStatus(200);
 });
 
+// https://discourse.slimframework.com/t/implementing-server-sent-events-with-slim-4/4482/5
+
 $app->run();

@@ -18,5 +18,7 @@ echo $this->fetch('./partial/header.php');
     setTimeout(function() {
         location.reload();
     }, 30 * 60000);
+
+    // SSE worker
 </script>
 <?php echo $this->fetch('./partial/footer.php'); ?>

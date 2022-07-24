@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<script src="<?php echo $config['baseFolder']; ?>/js/js-confetti.browser.js"></script>
-<script src="<?php echo $config['baseFolder']; ?>/js/main.js"></script>
+<script src="<?php echo $config['baseFolder']; ?>/js/js-confetti.browser.js?t=<?php echo time(); ?>"></script>
+<script src="<?php echo $config['baseFolder']; ?>/js/main.js?t=<?php echo time(); ?>"></script>
 </body>
 </html>

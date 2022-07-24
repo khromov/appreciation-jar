@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "php -S localhost:8080 -t src",
+    "dev": "PHP_CLI_SERVER_WORKERS=3 php -S localhost:8080 -t src",
     "dev-styles": "tailwindcss -i ./src/styles.css -o ./src/dist/output.css --watch",
     "build": "tailwindcss -i ./src/styles.css -o ./src/dist/output.css --minify"
   },
