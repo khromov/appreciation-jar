@@ -135,6 +135,10 @@ class Db {
         return $appreciationStatement->fetch();
     }
 
+    static function getLatestAppreciationId() {
+        return intval(self::getMetadata('latestAppreciation', 0));
+    }
+
     static function getNextAppreciationId() {
         $latestId = intval(self::getMetadata('latestAppreciation', 0));
         $appreciationStatement = self::$db->prepare("SELECT id FROM appreciations WHERE id > ? LIMIT 1");

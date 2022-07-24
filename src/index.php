@@ -128,10 +128,9 @@ $app->get('/admin/{secret}', function (Request $request, Response $response, arr
         $stmt = $db->prepare("SELECT * FROM appreciations");
         $stmt->execute();
         
-        // Get the results as an array with column names as array keys
         $appreciations = $stmt->fetchAll();
 
-        return $renderer->render($response, "admin.php", ['baseFolder' => $baseFolder, 'appreciations' => $appreciations, 'secret' => $secret, 'currentlyPublished' => intval(Db::getMetadata('latestAppreciation', 0))]);
+        return $renderer->render($response, "admin.php", ['baseFolder' => $baseFolder, 'appreciations' => $appreciations, 'secret' => $secret, 'currentlyPublished' => Db::getLatestAppreciationId()]);
     } else {
         return $renderer->render($response, "error.php", [ 'errorMessage' => '🤷‍♂️', 'baseFolder' => $baseFolder]);
     }
@@ -183,7 +182,7 @@ $app->get('/api/appreciation/{id}', function(Request $request, Response $respons
 });
 
 // Test to increment values
-$app->get('/increment', function(Request $request, Response $response, array $args) use($db) {
+$app->post('/increment', function(Request $request, Response $response, array $args) use($db) {
     Db::maybeIncrementLatestAppreciationId(true);
     $newCount = intval(Db::getMetadata('latestAppreciation', 0));
 
