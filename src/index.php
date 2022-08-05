@@ -1,6 +1,7 @@
 <?php
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Psr7\NonBufferedBody;
 use Slim\Factory\AppFactory;
 use Slim\Views\PhpRenderer;
 use Khromov\AppreciationJar\Lib\Helpers;
@@ -193,5 +194,37 @@ $app->post('/increment', function(Request $request, Response $response, array $a
 });
 
 // https://discourse.slimframework.com/t/implementing-server-sent-events-with-slim-4/4482/5
+$app->get('/events', function (Request $request, Response $response) {
+    $response = $response
+        ->withBody(new NonBufferedBody())
+        ->withHeader('Content-Type', 'text/event-stream')
+        ->withHeader('Cache-Control', 'no-cache')
+        ->withHeader('X-Accel-Buffering', 'no'); // https://www.nginx.com/resources/wiki/start/topics/examples/x-accel/
+
+    $body = $response->getBody();
+
+    // 1 is always true, so repeat the while loop forever (aka event-loop)
+    while (1) {
+        $latestAppreciationId = Db::getLatestAppreciationId();
+        $likes = Db::getLikes($latestAppreciationId);
+        // Send named event
+        $now = date('Y-m-d H:i:s');
+        $event = sprintf("event: %s\ndata: %s\n\n", 'ping', json_encode(['latest' => $latestAppreciationId, 'likes' => $likes]));
+
+        // Add a whitespace to the end
+        $body->write($event . ' ');
+
+        // break the loop if the client aborted the connection (closed the page)
+        // https://discourse.slimframework.com/t/implementing-server-sent-events-with-slim-4/4482/9
+        if (connection_aborted()) { 
+            break;
+        }
+
+        // sleep for 1 second before running the loop again
+        sleep(2);
+    }
+
+    return $response;
+});
 
 $app->run();

@@ -12,10 +12,4 @@ echo $this->fetch('./partial/header.php');
         <a class="text-white" href="<?php echo $baseFolder ?>/latest">✨ View latest</a>
     </div>
 </div>
-<script>
-    // Auto reload every 30 minutes
-    setTimeout(function() {
-        location.reload();
-    }, 30 * 60000);
-</script>
 <?php echo $this->fetch('./partial/footer.php'); ?>

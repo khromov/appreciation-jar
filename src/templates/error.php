@@ -12,9 +12,9 @@ echo $this->fetch('./partial/header.php');
     </div>
 </div>
 <script>
-    // Auto reload every 5 minutes
+    // Auto reload every couple of minutes, in case we end up on this page by accident for some reason.
     setTimeout(function() {
         location.reload();
-    }, 5 * 60000);
+    }, 2 * 60000);
 </script>
 <?php echo $this->fetch('./partial/footer.php'); ?>

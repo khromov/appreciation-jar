@@ -7,7 +7,7 @@
         <a href="https://icons8.com/illustrations/style--woolly">Woolly</a>
     </div>
 </div>
-
+<script src="<?php echo $config['baseFolder']; ?>/js/promise-queue.js?t=<?php echo time(); ?>"></script>
 <script src="<?php echo $config['baseFolder']; ?>/js/js-confetti.browser.js?t=<?php echo time(); ?>"></script>
 <script src="<?php echo $config['baseFolder']; ?>/js/main.js?t=<?php echo time(); ?>"></script>
 </body>

@@ -14,11 +14,10 @@ echo $this->fetch('./partial/header.php');
     </div>
 </div>
 <script>
-    // Auto reload every 30 minutes
-    setTimeout(function() {
-        location.reload();
-    }, 30 * 60000);
-
-    // SSE worker
+    window.initialAppreciationId = <?php echo json_encode(intval($appreciation['id'])); ?>;
+    window.initialAppreciationLikeCount = <?php echo json_encode(intval($appreciation['count'])); ?>;
+    window.addEventListener('load', (event) => {
+        window.startSSEReloadPolling();
+    });
 </script>
 <?php echo $this->fetch('./partial/footer.php'); ?>
