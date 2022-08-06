@@ -19,5 +19,10 @@ echo $this->fetch('./partial/header.php');
     window.addEventListener('load', (event) => {
         window.startSSEReloadPolling();
     });
+
+    // Auto reload every hour so we can still get new code versions
+    //setTimeout(function() {
+    //    location.reload();
+    //}, 60 * 60000);
 </script>
 <?php echo $this->fetch('./partial/footer.php'); ?>

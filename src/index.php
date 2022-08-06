@@ -203,8 +203,17 @@ $app->get('/events', function (Request $request, Response $response) {
 
     $body = $response->getBody();
 
+    $counter = 0;
+
     // 1 is always true, so repeat the while loop forever (aka event-loop)
     while (1) {
+        $counter++;
+
+        // Try to increment appreciation every 10 minutes
+        if($counter % 600 === 0) {
+            Db::maybeIncrementLatestAppreciationId();
+        }
+
         $latestAppreciationId = Db::getLatestAppreciationId();
         $likes = Db::getLikes($latestAppreciationId);
         // Send named event
@@ -220,7 +229,7 @@ $app->get('/events', function (Request $request, Response $response) {
             break;
         }
 
-        // sleep for 1 second before running the loop again
+        // sleep for some time before running the loop again
         sleep(2);
     }
 

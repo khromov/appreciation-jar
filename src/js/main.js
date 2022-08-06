@@ -45,7 +45,7 @@ window.likeQueue = new Queue(10, Infinity);
 // Function for SSE polling
 window.startSSEReloadPolling = function () {
     // SSE worker
-    var eventSource = new EventSource("/events");
+    var eventSource = new ReconnectingEventSource("/events");
 
     // Event when receiving a message from the server
     eventSource.onmessage = function(event) {

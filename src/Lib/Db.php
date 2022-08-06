@@ -61,6 +61,18 @@ class Db {
         return $db;
     }
 
+    static function beginTransaction() {
+        return self::$db->beginTransaction();
+    }
+
+    static function endTransaction() {
+        return self::$db->commit();
+    }
+
+    static function rollbackTransaction() {
+        return self::$db->rollBack();
+    }
+
     static function get() {
         if(self::$db !== null) {
             return self::$db;
@@ -170,18 +182,26 @@ class Db {
      * @return void 
      */
     static function maybeIncrementLatestAppreciationId($overrideTimer = false) {
-        $lastUpdate = intval(self::getMetadata('lastUpdate'));
-        $currentTime = time();
-        $config = Helpers::getConfig();
+        try {
+            self::beginTransaction();
 
-        if($overrideTimer || $lastUpdate === 0 || ($currentTime - $lastUpdate) > intval($config['new_appreciation_every_x_seconds'])) {
+            $lastUpdate = intval(self::getMetadata('lastUpdate'));
+            $currentTime = time();
+            $config = Helpers::getConfig();
 
-            $nextMessageId = self::getNextAppreciationId();
-    
-            if($nextMessageId !== 0) {    
-                self::setMetadata('latestAppreciation', $nextMessageId);
-                self::setMetadata('lastUpdate', $currentTime);
+            if($overrideTimer || $lastUpdate === 0 || ($currentTime - $lastUpdate) > intval($config['new_appreciation_every_x_seconds'])) {
+
+                $nextMessageId = self::getNextAppreciationId();
+        
+                if($nextMessageId !== 0) {    
+                    self::setMetadata('latestAppreciation', $nextMessageId);
+                    self::setMetadata('lastUpdate', $currentTime);
+                }
             }
+
+            self::endTransaction();
+        } catch(\PDOException $e) {
+            self::rollbackTransaction();
         }
     }
 
